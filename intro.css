@@ -1,0 +1,68 @@
+:root {
+  --bg: #070405; --text: #ffffff; --muted: #cbbfc2;
+  --red: #e11d2e; --red-bright: #ff5c68;
+  --glow: 0 0 10px #ff2d45, 0 0 28px #ff2d45, 0 0 60px #ff2d45, 0 0 110px rgba(255, 45, 69, .9), 0 0 170px rgba(225, 29, 46, .6);
+}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  display: grid; place-items: center; overflow: hidden;
+  font-family: "Poppins", system-ui, sans-serif; color: var(--text);
+  background:
+    radial-gradient(ellipse at 18% 12%, rgba(120, 8, 22, .42), transparent 55%),
+    radial-gradient(ellipse at 85% 92%, rgba(90, 6, 16, .48), transparent 55%),
+    var(--bg);
+  transition: opacity .6s ease, transform .6s ease, filter .6s ease;
+}
+body.leaving { opacity: 0; transform: scale(1.08); filter: blur(6px); }
+:focus-visible { outline: 2px solid var(--red-bright); outline-offset: 4px; }
+#bubbles { position: fixed; inset: 0; width: 100%; height: 100%; }
+
+@property --ang { syntax: "<angle>"; initial-value: 0deg; inherits: false; }
+.intro { position: relative; z-index: 2; width: min(92vw, 780px); padding: 24px; pointer-events: none; }
+.box {
+  position: relative; text-align: center; pointer-events: auto;
+  padding: clamp(32px, 6vw, 64px) clamp(22px, 5vw, 56px); border-radius: 32px;
+  background: rgba(17, 10, 11, .62); backdrop-filter: blur(14px);
+  border: 1px solid #43202a; box-shadow: 0 0 60px rgba(150, 10, 25, .3);
+  opacity: 0; animation: pop .8s cubic-bezier(.2, 1.5, .4, 1) .1s forwards;
+  transition: box-shadow .3s;
+}
+.box:hover { box-shadow: 0 0 34px rgba(255, 45, 69, .4), 0 0 90px rgba(150, 10, 25, .35); }
+/* Animate the border when the pointer is over it */
+.box::before {
+  content: ""; position: absolute; inset: -2px; padding: 2px; border-radius: 34px; pointer-events: none;
+  background: conic-gradient(from var(--ang), transparent 0 55%, #ff2d45 78%, #fff 92%, transparent 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  opacity: 0; transition: opacity .25s; animation: ring 2s linear infinite;
+}
+.box:hover::before { opacity: 1; }
+@keyframes ring { to { --ang: 360deg; } }
+.box > * { opacity: 0; animation: pop .8s cubic-bezier(.2, 1.5, .4, 1) forwards; }
+.box > :nth-child(1) { animation-delay: .5s; }
+.box > :nth-child(2) { animation-delay: .7s; }
+.box > :nth-child(3) { animation-delay: .9s; }
+.box > :nth-child(4) { animation-delay: 1.1s; }
+@keyframes pop { from { opacity: 0; transform: translateY(28px) scale(.85); } to { opacity: 1; transform: none; } }
+
+.eyebrow { font-size: clamp(1rem, 2.4vw, 1.4rem); font-weight: 500; color: var(--muted); letter-spacing: 2px; }
+h1 { font-size: clamp(2.6rem, 9vw, 5.5rem); line-height: 1.05; letter-spacing: -.03em; margin: 8px 0 14px; }
+h1 span { display: block; color: var(--red-bright); text-shadow: 0 0 26px rgba(255, 45, 69, .55); }
+.roles { font-size: clamp(1rem, 2vw, 1.3rem); color: var(--muted); }
+
+.enter {
+  display: inline-flex; align-items: center; gap: 8px; margin: 36px 0 20px; padding: 14px 38px;
+  font: 700 1.1rem "Poppins", sans-serif; letter-spacing: .5px; text-decoration: none; color: #fff;
+  background: var(--red); border: 2px solid var(--red-bright); border-radius: 999px;
+  box-shadow: 0 0 14px rgba(255, 45, 69, .45); pointer-events: auto;
+  transition: scale .35s cubic-bezier(.34, 1.56, .64, 1), box-shadow .3s, background-color .3s, border-color .3s;
+}
+.enter i { font-size: 1.5rem; }
+.enter:hover, .enter:focus-visible, .enter:active { scale: 1.12; background: #ff3347; border-color: #ff8a93; box-shadow: var(--glow); }
+
+@media (prefers-reduced-motion: reduce) {
+  .box, .box > * { animation: none; opacity: 1; }
+  .box::before { animation: none; background: var(--red-bright); }
+  .enter { transition: none; }
+}
